@@ -1,18 +1,23 @@
-import { useEffect } from 'react';
+import { useEffect, FC } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { DevicesActions } from '../../_actions';
+import { getDeviceAction } from '../../_actions';
 import { MapContainer, Marker, TileLayer, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-import { withRouter } from 'react-router-dom';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { DeviceWrapper } from './style';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { AppState } from '../../_helpers/store';
 
-const Main = (props) => {
-  const { latitude, longitude, gettingDevice, deviceError } = useSelector((state) => state.devices);
-  const token = useSelector((state) => state.authentication.token);
+const Main: FC<RouteComponentProps<any>> = (props) => {
+  const {
+    coordinates: { latitude, longitude },
+    gettingDevice,
+    deviceError: {error},
+  } = useSelector((state: AppState) => state.devices);
+  const token = useSelector((state: AppState) => state.authentication.user.token);
   const dispatch = useDispatch();
   const { id } = props.match.params;
 
@@ -24,22 +29,22 @@ const Main = (props) => {
   });
 
   useEffect(() => {
-    dispatch(DevicesActions.getDevice(id, token));
+    dispatch(getDeviceAction({ id, token }));
   }, []);
 
   return (
     <DeviceWrapper>
       {gettingDevice ? (
         <CircularProgress color="inherit" />
-      ) : !gettingDevice && deviceError ? (
-        <div>{deviceError}</div>
+      ) : !gettingDevice && error ? (
+        <div>{error}</div>
       ) : latitude && longitude && !gettingDevice ? (
-        <MapContainer center={[latitude, longitude]} zoom={20} className="map-container" scrollWheelZoom={true}>
+        <MapContainer center={[+latitude, +longitude]} zoom={20} className="map-container" scrollWheelZoom={true}>
           <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <Marker position={[latitude, longitude]} icon={Icon}>
+          <Marker position={[+latitude, +longitude]} icon={Icon}>
             <Popup>
               {latitude}, {longitude}
             </Popup>

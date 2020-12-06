@@ -19,3 +19,5 @@ export const store = createStore(
   applyMiddleware(thunkMiddleware, loggerMiddleware)
 );
 export const persistor = persistStore(store);
+
+export type AppState = ReturnType<typeof rootReducer>;

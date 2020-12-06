@@ -1,32 +1,38 @@
-import { useState } from 'react';
+import { useState, FC } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { AuthenticationActions } from '../../_actions';
+import { loginAction } from '../../_actions';
 import { useStyles } from './style';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { AppState } from '../../_helpers/store';
 
-const Main = () => {
+interface IState {
+  username: string;
+  password: string;
+}
+
+const Main: FC = () => {
   const classes = useStyles();
-  const loggingIn = useSelector((state) => state.authentication.loggingIn);
+  const loggingIn = useSelector((state: AppState) => state.authentication.loggingIn);
   const dispatch = useDispatch();
 
-  const [state, setState] = useState({
+  const [state, setState] = useState<IState>({
     username: '',
     password: '',
   });
 
-  const handleInputChange = ({ target: { name, value } }) => {
+  const handleInputChange = ({ target: { name, value } }: {target: {name: string, value: string}}) => {
     setState({
       ...state,
       [name]: value,
     });
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    dispatch(AuthenticationActions.login(state.username, state.password));
+    dispatch(loginAction({ username: state.username, password: state.password }));
   };
 
   return (

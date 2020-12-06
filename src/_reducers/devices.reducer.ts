@@ -23,7 +23,7 @@ export function devices(state = initialState, action: DevicesActionTypes): IDevi
       return {
         ...state,
         gettingDevices: false,
-        devicesInfo: { deviceList: [...state.devicesInfo.deviceList, action.payload.deviceList], hasNext: action.payload.hasNext },
+        devicesInfo: { deviceList: [...state.devicesInfo.deviceList, ...action.payload.deviceList], hasNext: action.payload.hasNext },
         page: state.page + 1,
       };
 

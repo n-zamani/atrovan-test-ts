@@ -1,18 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, FC } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { AuthenticationActions } from '../../_actions';
+import { resetAuth } from '../../_actions';
 import { LoginInputs } from '../../components';
 import { LoginWrapper } from './style';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import { AppState } from '../../_helpers/store';
 
-const Main = () => {
-  const loginError = useSelector((state) => state.authentication.loginError);
+const Main: FC = () => {
+  const loginError = useSelector((state: AppState) => state.authentication.loginError.error);
   const dispatch = useDispatch();
   const [snackbar, setSnackbar] = useState(false);
 
   useEffect(() => {
-    dispatch(AuthenticationActions.reset());
+    dispatch(resetAuth());
   }, [])
 
   useEffect(() => {

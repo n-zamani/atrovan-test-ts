@@ -1,35 +1,39 @@
-import { useEffect } from 'react';
+import { useEffect, FC } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { DevicesActions } from '../../_actions';
+import { getDevicesAction, resetDevices } from '../../_actions';
 import InfiniteScroll from 'react-infinite-scroller';
 import { DeviceCards } from '../../components';
 import { HomeWrapper } from './style';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { AppState } from '../../_helpers/store';
 
-const Main = () => {
-  const { gettingDevices, deviceList, hasNext, devicesError, page } = useSelector((state) => state.devices);
-  const token = useSelector((state) => state.authentication.token);
+const Main: FC = () => {
+  const { gettingDevices, devicesInfo: {deviceList, hasNext}, devicesError: {error}, page } = useSelector((state: AppState) => state.devices);
+  const token = useSelector((state: AppState) => state.authentication.user.token);
   const dispatch = useDispatch();
 
-  let items = [];
+  let items: React.ReactNode[] = [];
 
   useEffect(() => {
-    dispatch(DevicesActions.resetDevices());
-  }, []);
+    dispatch(resetDevices());
+    return () => {
+      dispatch(resetDevices());
+    }
+  }, [])
 
   useEffect(() => {
     if (!deviceList.length) {
-      dispatch(DevicesActions.getDevices(page, token));
+      dispatch(getDevicesAction({page, token}));
     }
   }, [deviceList]);
 
   const loadMore = () => {
     if (hasNext && !gettingDevices) {
-      dispatch(DevicesActions.getDevices(page, token));
+      dispatch(getDevicesAction({page, token}));
     }
   };
 
-  deviceList.map((device) => {
+  deviceList.forEach((device) => {
     items.push(<DeviceCards device={device} key={device.id.id} />);
   });
 
@@ -38,8 +42,8 @@ const Main = () => {
       <InfiniteScroll pageStart={0} loadMore={loadMore} hasMore={hasNext && !gettingDevices}>
         <section className="devices-wrapper">{items}</section>
       </InfiniteScroll>
-      {devicesError ? (
-        <div>{devicesError}</div>
+      {error ? (
+        <div>{error}</div>
       ) : gettingDevices ? (
         <CircularProgress className="loader" color="inherit" />
       ) : (

@@ -10,11 +10,17 @@ export enum DevicesConstants {
 
 export interface IDevicesData {
   page: number;
-  token: string;
+  token: string | null;
+}
+
+export interface IListFormat {
+  id: {id: string};
+  name: string;
+  type: string;
 }
 
 export interface IDevicesResponse {
-  deviceList: Array<object>;
+  deviceList: IListFormat[];
   hasNext: boolean;
 }
 
@@ -24,7 +30,7 @@ export interface IDevicesErrorMsg {
 
 export interface IDeviceData {
   id: string;
-  token: string;
+  token: string | null;
 }
 
 export interface IDeviceResponse {

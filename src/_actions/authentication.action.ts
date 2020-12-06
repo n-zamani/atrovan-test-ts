@@ -53,7 +53,7 @@ export function logoutAction(): AuthThunk {
   }
 }
 
-export function reset(): AuthThunk {
+export function resetAuth(): AuthThunk {
   return (dispatch: Dispatch) => {
     dispatch(success());
   };

@@ -1,12 +1,13 @@
+import { FC } from "react";
 import { useDispatch } from 'react-redux';
-import { AuthenticationActions } from '../../_actions';
-import { Link, withRouter } from 'react-router-dom';
+import { logoutAction } from '../../_actions';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { useStyles } from './style';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 
-const Main = (props) => {
+const Main: FC<RouteComponentProps<any>> = (props) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const { pathname } = props.location;
@@ -23,7 +24,7 @@ const Main = (props) => {
             <Link to="/login">
               <Button>Login</Button>
             </Link>
-          ) : pathname.includes('/device/') ? (
+          ) : pathname?.includes('/device/') ? (
             <Link to="/">
               <Button>Device List</Button>
             </Link>
@@ -33,9 +34,7 @@ const Main = (props) => {
         </nav>
 
         <div>
-          <Button onClick={() => dispatch(AuthenticationActions.logout())}>
-            Logout
-          </Button>
+          <Button onClick={() => dispatch(logoutAction())}>Logout</Button>
         </div>
       </Toolbar>
     </AppBar>
