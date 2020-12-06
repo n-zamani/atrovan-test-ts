@@ -1,32 +1,29 @@
-import { DevicesConstants } from '../_constants';
+import { DevicesActionTypes, DevicesConstants, IDevicesState } from '../_types';
 
-const initialState = {
+const initialState: IDevicesState = {
   gettingDevices: false,
-  deviceList: [],
-  hasNext: false,
+  devicesInfo: { deviceList: [], hasNext: false },
   page: 0,
-  devicesError: null,
+  devicesError: { error: null },
   gettingDevice: false,
-  latitude: null,
-  longitude: null,
-  deviceError: null
+  coordinates: { latitude: null, longitude: null },
+  deviceError: { error: null },
 };
 
-export function devices(state = initialState, action) {
+export function devices(state = initialState, action: DevicesActionTypes): IDevicesState {
   switch (action.type) {
     case DevicesConstants.GET_DEVICES_REQUEST:
       return {
         ...state,
         gettingDevices: true,
-        devicesError: null,
+        devicesError: { error: null },
       };
 
     case DevicesConstants.GET_DEVICES_SUCCESS:
       return {
         ...state,
         gettingDevices: false,
-        deviceList: [...state.deviceList, ...action.list],
-        hasNext: action.hasNext,
+        devicesInfo: { deviceList: [...state.devicesInfo.deviceList, action.payload.deviceList], hasNext: action.payload.hasNext },
         page: state.page + 1,
       };
 
@@ -34,40 +31,38 @@ export function devices(state = initialState, action) {
       return {
         ...state,
         gettingDevices: false,
-        devicesError: action.error,
-        hasNext: false,
+        devicesError: action.payload,
+        devicesInfo: {...state.devicesInfo, hasNext: false}
       };
 
     case DevicesConstants.GET_DEVICE_REQUEST:
       return {
         ...state,
         gettingDevice: true,
-        deviceError: null,
+        deviceError: {error: null},
       };
 
     case DevicesConstants.GET_DEVICE_SUCCESS:
       return {
         ...state,
         gettingDevice: false,
-        latitude: action.latitude,
-        longitude: action.longitude,
+        coordinates: action.payload
       };
 
     case DevicesConstants.GET_DEVICE_ERROR:
       return {
         ...state,
         gettingDevice: false,
-        deviceError: action.error,
+        deviceError: action.payload,
       };
 
     case DevicesConstants.RESET_DEVICES:
       return {
         ...state,
         gettingDevices: false,
-        deviceList: [],
-        hasNext: false,
+        devicesInfo: {deviceList: [], hasNext: false},
         page: 0,
-        devicesError: null,
+        devicesError: {error: null},
       };
 
     default:

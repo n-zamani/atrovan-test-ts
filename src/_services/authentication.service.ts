@@ -1,13 +1,10 @@
+import { ILoginData } from "../_types";
+
 export const AuthenticationServices = {
   login
 }
 
-async function login(username, password) {
-
-  const data = {
-    username,
-    password
-  };
+async function login(data: ILoginData) {
 
   const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
     method: 'POST',

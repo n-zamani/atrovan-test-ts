@@ -1,19 +1,19 @@
-import { AuthenticationConstants } from '../_constants';
+import { AuthenticationConstants, IAuthState, AuthActionTypes } from '../_types';
 
-const initialState = {
+const initialState: IAuthState = {
   loggingIn: false,
   loggedIn: false,
-  loginError: null,
-  token: null,
+  user: { token: null },
+  loginError: { error: null },
 };
 
-export function authentication(state = initialState, action) {
+export function authentication(state = initialState, action: AuthActionTypes): IAuthState {
   switch (action.type) {
     case AuthenticationConstants.LOGIN_REQUEST:
       return {
         ...state,
         loggingIn: true,
-        loginError: null,
+        loginError: { error: null },
       };
 
     case AuthenticationConstants.LOGIN_SUCCESS:
@@ -21,28 +21,28 @@ export function authentication(state = initialState, action) {
         ...state,
         loggingIn: false,
         loggedIn: true,
-        token: action.token,
+        user: action.payload,
       };
 
     case AuthenticationConstants.LOGIN_ERROR:
       return {
         ...state,
         loggingIn: false,
-        loginError: action.error,
+        loginError: action.payload,
       };
 
     case AuthenticationConstants.LOGOUT:
       return {
         ...state,
         loggedIn: false,
-        token: null,
+        user: { token: null },
       };
 
-    case AuthenticationConstants.RESET:
+    case AuthenticationConstants.RESET_AUTH:
       return {
         ...state,
         loggingIn: false,
-        loginError: null,
+        loginError: { error: null },
       };
 
     default:
